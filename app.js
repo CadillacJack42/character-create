@@ -1,71 +1,80 @@
 // import functions and grab DOM elements
-import { makeStatsString } from './utils.js';
+import { makeStatsString, textFormatter } from './utils.js';
 const headDropdown = document.getElementById('head-dropdown');
 const middleDropdown = document.getElementById('middle-dropdown');
 const bottomDropdown = document.getElementById('bottom-dropdown');
-const headEl = document.getElementById('head');
-const middleEl = document.getElementById('middle');
-const bottomEl = document.getElementById('bottom');
 const reportEl = document.getElementById('report');
-const chatchphrasesEl = document.getElementById('chatchphrases');
+const catchphrasesEl = document.getElementById('chatchphrases');
 const catchphraseInput = document.getElementById('catchphrase-input');
 const catchphraseButton = document.getElementById('catchphrase-button');
 
-// set state for how many times the user changes the head, middle, and bottom
-// set state for all of the character's catchphrases
+let states = {
+    catchPhrases: [],
+    head: 0,
+    middle: 0,
+    bottom: 0
+};
 
-headDropdown.addEventListener('change', () => {
-    // get the value of the head dropdown
-
-    // increment the head change count state
-    
-    // update the dom for the head
-
-    // update the stats to show the new count
+headDropdown.addEventListener('change', (event) => {
+    handleClick(event);
 });
 
-
-middleDropdown.addEventListener('change', () => {
-    // get the value of the middle dropdown
-
-    // increment the middle change count state
-    
-    // update the dom for the middle
-
-    // update the stats to show the new count
+middleDropdown.addEventListener('change', (event) => {
+    handleClick(event);
 });
 
-
-bottomDropdown.addEventListener('change', () => {
-    // get the value of the bottom dropdown
-
-    // increment the bottom change count state
-    
-    // update the dom for the bottom
-
-    // update the stats to show the new count
+bottomDropdown.addEventListener('change', (event) => {
+    handleClick(event);
 });
 
 catchphraseButton.addEventListener('click', () => {
     // get the value of the catchphrase input
-    
+    let phrase = catchphraseInput.value;
     // push the new catchphrase to the catchphrase array in state
+    states.catchPhrases.push(phrase);
     // update the dom for the bottom
+    // catchphrasesEl.textContent = '';
     // clear out the form input's value so it's empty to the user
+    catchphraseInput.value = '';
     // update the dom to show the new catchphrases (call a function to do this work)
+    displayCatchphrases(states.catchPhrases);
 
 });
 
 function displayStats() {
     // change the text contentof the reportEl to tell the user how many times they've changed each piece of the state
-    const statsString = makeStatsString(); // call this function with the correct arguments
+    const statsString = makeStatsString(states.head, states.middle, states.bottom); // call this function with the correct arguments
+    reportEl.textContent = statsString;
 }
 
 function displayCatchphrases() {
     // clear out the DOM for the currently displayed catchphrases
-
+    catchphrasesEl.textContent = '';
     // loop through each catchphrase in state
-    // and for each catchphrase
-    // create an HTML element with the catchphrase as its text content
-    // and append that HTML element to the cleared-out DOM
+    for (const phrase of states.catchPhrases) {
+        let p = document.createElement('p');
+        p.textContent = phrase;
+        catchphrasesEl.append(p);
+    }
 }
+
+const handleClick = (event) => {
+    let val = event.target.value;
+
+    let descriptor = textFormatter(event.target.id);
+    
+    states[descriptor]++;
+    
+    let domEl = document.getElementById(descriptor);
+
+    domEl.textContent = '';
+    let newEl = document.createElement('img');
+
+    if (descriptor === 'bottom') {
+        descriptor = 'pants';
+    }
+
+    newEl.src = `./assets/${val}-${descriptor}.png`;
+    domEl.append(newEl);
+    displayStats();
+};

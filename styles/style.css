@@ -139,3 +139,13 @@ main {
     font-family: cursive;
     text-align: center;
 }
+
+.bg img{
+    width: 200px;
+    box-sizing: border-box;
+}
+
+#head img{
+    margin-top: 30px;
+    max-height: 250px;
+}
